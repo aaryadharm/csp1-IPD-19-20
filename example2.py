@@ -7,22 +7,22 @@
 ####
 
 team_name = 'E2'
-strategy_name = 'Alternate'
-strategy_description = 'Collude, then alternate.'
+strategy_name = 'Alternate twice but adapt'
+strategy_description = 'try to identify a pattern and use te best strategy for that but if we cannot identify a strategy, then collude twice and betray twice back anf forth.'
     
 def move(my_history, their_history, my_score, their_score):
-    '''Make my move based on the history with this player.
-    
-    history: a string with one letter (c or b) per round that has been played with this opponent.
-    their_history: a string of the same length as history, possibly empty. 
-    The first round between these two players is my_history[0] and their_history[0]
-    The most recent round is my_history[-1] and their_history[-1]
-    
-    Returns 'c' or 'b' for collude or betray.
-    '''
-    # This player colludes on even numbered rounds (first round is round #0).
-    if len(my_history)%2 == 0:
-        return 'c'
-    else:
-        return 'b'
-    
+  '''take in their history and my history as inputs and if we identify a pattern in the recent parts of their history, we will use the best strategy to combat it. if a pattern is unable to be distinguished, then betray twice and collude twice.'''
+  if their_history[-4:] == 'cccc':
+    return 'c'
+  elif their_history[-4] == 'bbbb':
+    return 'b'
+  elif 'cbcb' == their_history[-4]:
+    return 'b'
+  elif my_history[-2:] == 'bb':
+    return 'c'
+  elif my_history[-1] == 'b':
+    return 'b'
+  elif my_history[-2:] == 'cc':
+    return 'b'
+  else:
+    return 'c'
