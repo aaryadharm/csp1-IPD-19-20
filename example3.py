@@ -7,24 +7,30 @@
 ####
 
 team_name = 'E3'
-strategy_name = 'Collude but retaliate'
-strategy_description = '''\
-Collude first round. Collude, except in a round after getting 
-a severe punishment.'''
+strategy_name = 'predicting a pattern'
+strategy_description = '''we try to predict the pattern that our opponent has, and return values based on that pattern. if no pattern is detected, then we will figure out whether they betrayed or colluded more in their last 10 rounds and act upon that.'''
     
 def move(my_history, their_history, my_score, their_score):
-    '''Make my move based on the history with this player.
-    
-    history: a string with one letter (c or b) per round that has been played with this opponent.
-    their_history: a string of the same length as history, possibly empty. 
-    The first round between these two players is my_history[0] and their_history[0]
-    The most recent round is my_history[-1] and their_history[-1]
-    
-    Returns 'c' or 'b' for collude or betray.
-    '''
+    '''We used their history as an input to figure out their last few moves and we used our history to see whether we betrayed or colluded in the last round so that we can continue the pattern. finally, based on which pattern our opponent followed our output was "c" or "b"'''
+    counter = 0
     if len(my_history)==0: # It's the first round; collude.
+      return 'c'
+    elif 'bbb' in their_history[-4:]:
+      return 'b' # Betray if they were severely punished last time,
+    elif 'ccc' in their_history[-4:]:
+      return 'b'
+    elif 'bcbc' in their_history[-4:]:
+      if my_history[-1]=='b':
         return 'c'
-    elif my_history[-1]=='c' and their_history[-1]=='b':
-        return 'b' # Betray if they were severely punished last time,
+      else:
+        return 'b'
     else:
-        return 'c' # otherwise collude.
+      for number in range(10):
+        if their_history[-number]=='b':
+          counter += 1
+        else:
+          counter += -1
+        if counter > 0:
+          return 'b'
+        else:
+          return 'c'
